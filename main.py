@@ -10,32 +10,30 @@ from telegram.ext import (
     ContextTypes
 )
 
-TOKEN = "8760344330:AAG4KQOaRo_JJNJC8r5Tg88lFHDM4PSABSs"
+TOKEN = "PUT_YOUR_NEW_TOKEN_HERE"
 
 user_last_request = {}
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("ابعت لينك الفيديو و اهدي علي نفسك🙄👇")
+    await update.message.reply_text("ابعت لينك الفيديو و اهدي علي نفسك 🙄👇")
 
 async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
 
-    # تحقق من اللينك
     if not url.startswith("http"):
         await update.message.reply_text("❌ ابعت لينك صح يخالي")
         return
 
-    # منع السبام
     now = time.time()
     last = user_last_request.get(update.message.chat_id, 0)
 
     if now - last < 5:
-        await update.message.reply_text("استنى شوية يبووي لو الصبر يعدي عليكم 😅")
+        await update.message.reply_text("استنى شوية يبووي 😅")
         return
 
     user_last_request[update.message.chat_id] = now
 
-    await update.message.reply_text("⏳ اهو بيحمل اصبر يووه بقا")
+    await update.message.reply_text("⏳ جاري التحميل...")
 
     filename = None
 
@@ -50,24 +48,21 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
                 filename = ydl.prepare_filename(info)
-
         except:
-            # fallback لو حصل مشكلة
             ydl_opts['format'] = 'worst'
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
                 filename = ydl.prepare_filename(info)
 
-        
+        # 👇 مهم: ده جوه try
         ext = filename.split('.')[-1].lower()
 
-with open(filename, 'rb') as file:
-    if ext in ['jpg', 'jpeg', 'png', 'webp']:
-        await update.message.reply_photo(photo=file)
-    else:
-        await update.message.reply_video(video=file)
+        with open(filename, 'rb') as file:
+            if ext in ['jpg', 'jpeg', 'png', 'webp']:
+                await update.message.reply_photo(photo=file)
+            else:
+                await update.message.reply_video(video=file)
 
-    
     except Exception as e:
         await update.message.reply_text(f"❌ حصل خطأ:\n{e}")
 
