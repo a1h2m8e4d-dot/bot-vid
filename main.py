@@ -10,7 +10,7 @@ from telegram.ext import (
     ContextTypes
 )
 
-TOKEN = "PUT_YOUR_NEW_TOKEN_HERE"
+TOKEN = "8760344330:AAG4KQOaRo_JJNJC8r5Tg88lFHDM4PSABSs"
 
 user_last_request = {}
 
