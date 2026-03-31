@@ -58,9 +58,16 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 info = ydl.extract_info(url, download=True)
                 filename = ydl.prepare_filename(info)
 
-        with open(filename, 'rb') as file:
-            await update.message.reply_video(video=file)
+        
+        ext = filename.split('.')[-1].lower()
 
+with open(filename, 'rb') as file:
+    if ext in ['jpg', 'jpeg', 'png', 'webp']:
+        await update.message.reply_photo(photo=file)
+    else:
+        await update.message.reply_video(video=file)
+
+    
     except Exception as e:
         await update.message.reply_text(f"❌ حصل خطأ:\n{e}")
 
